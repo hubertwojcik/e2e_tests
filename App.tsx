@@ -27,7 +27,10 @@ const Tab = createBottomTabNavigator();
 const HomeNavigator = () => {
   const navigation = useNavigation();
   return (
-    <HomeStack.Navigator>
+    <HomeStack.Navigator
+      screenOptions={{
+        headerShown: false,
+      }}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="Counters" component={CounterScreen} />
       <HomeStack.Screen
