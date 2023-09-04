@@ -1,7 +1,9 @@
+import 'react-native-reanimated';
+import 'react-native-gesture-handler';
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import {NavigationContainer, useNavigation} from '@react-navigation/native';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 // import SplashScreen from 'react-native-splash-screen';
 import {MemberProvider} from './src/context/MemberContext';
@@ -20,8 +22,8 @@ import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {TouchableOpacity} from 'react-native';
 
-const HomeStack = createNativeStackNavigator();
-const MemberStack = createNativeStackNavigator();
+const HomeStack = createStackNavigator();
+const MemberStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeNavigator = () => {
@@ -29,7 +31,7 @@ const HomeNavigator = () => {
   return (
     <HomeStack.Navigator
       screenOptions={{
-        headerShown: false,
+        headerBackAccessibilityLabel: 'header-back',
       }}>
       <HomeStack.Screen name="Home" component={HomeScreen} />
       <HomeStack.Screen name="Counters" component={CounterScreen} />
@@ -58,8 +60,27 @@ const HomeNavigator = () => {
 };
 
 const MemberNavigator = () => (
-  <MemberStack.Navigator>
-    <MemberStack.Screen name="Members" component={MemberListScreen} />
+  <MemberStack.Navigator
+    screenOptions={{
+      headerBackAccessibilityLabel: 'header-back',
+    }}>
+    <MemberStack.Screen
+      name="Members"
+      component={MemberListScreen}
+      options={{
+        headerRight: ({}) => (
+          //@ts-ignore
+          <TouchableOpacity onPress={() => navigation.navigate('AddMember')}>
+            <AntDesign
+              // eslint-disable-next-line react-native/no-inline-styles
+              style={{paddingRight: 15}}
+              name="pluscircle"
+              size={25}
+            />
+          </TouchableOpacity>
+        ),
+      }}
+    />
     <MemberStack.Screen name="ShowMember" component={ShowMemberScreen} />
     <MemberStack.Screen name="AddMember" component={AddMemberScreen} />
     <MemberStack.Screen name="EditMember" component={EditMemberScreen} />
@@ -72,11 +93,12 @@ const App = () => {
     <GestureHandlerRootView style={{flex: 1}}>
       <MemberProvider>
         <NavigationContainer>
-          <Tab.Navigator>
+          <Tab.Navigator screenOptions={{headerShown: false}}>
             <Tab.Screen
               name="HomeTab"
               component={HomeNavigator}
               options={{
+                title: 'Home',
                 tabBarIcon: () => <FontAwesome5 name="home" size={20} />,
                 tabBarAccessibilityLabel: 'Home',
               }}

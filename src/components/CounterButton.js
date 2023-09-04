@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, StyleSheet, Text, TouchableOpacity} from 'react-native';
 
-export default CounterButton = ({text, onPress, counter}) => {
+export default ({text, onPress, counter}) => {
   return (
-    <View style={styles.view}>
+    <View style={styles.view} testID="counterButton">
       <TouchableOpacity onPress={onPress}>
         <View style={styles.button}>
           <Text style={styles.buttonText}>{text}</Text>
