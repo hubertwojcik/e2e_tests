@@ -11,7 +11,6 @@ import {
 import MemberContext from '../../context/MemberContext';
 import ConfirmModal from '../../components/modalComponents/ConfirmModal';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
-import AntDesign from 'react-native-vector-icons/AntDesign';
 
 const MemberListScreen = ({navigation}) => {
   const {data, getMembers, deleteMember} = useContext(MemberContext);

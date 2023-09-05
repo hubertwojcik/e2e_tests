@@ -20,14 +20,14 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {TouchableOpacity} from 'react-native';
+import {Text, TouchableOpacity} from 'react-native';
 
 const HomeStack = createStackNavigator();
 const MemberStack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeNavigator = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
   return (
     <HomeStack.Navigator
       screenOptions={{
@@ -39,14 +39,19 @@ const HomeNavigator = () => {
         name="Members"
         component={MemberListScreen}
         options={{
+          headerTitle: () => <Text testID="memberListHeader">Members</Text>,
           headerRight: ({}) => (
             //@ts-ignore
-            <TouchableOpacity onPress={() => navigation.navigate('AddMember')}>
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('MembersTab', {screen: 'AddMember'})
+              }>
               <AntDesign
                 // eslint-disable-next-line react-native/no-inline-styles
                 style={{paddingRight: 15}}
                 name="pluscircle"
                 size={25}
+                testID="addMemberIcon"
               />
             </TouchableOpacity>
           ),
@@ -68,6 +73,7 @@ const MemberNavigator = () => (
       name="Members"
       component={MemberListScreen}
       options={{
+        headerTitle: () => <Text testID="memberListHeader">Members</Text>,
         headerRight: ({}) => (
           //@ts-ignore
           <TouchableOpacity onPress={() => navigation.navigate('AddMember')}>
@@ -76,6 +82,7 @@ const MemberNavigator = () => (
               style={{paddingRight: 15}}
               name="pluscircle"
               size={25}
+              testID="addMemberIcon"
             />
           </TouchableOpacity>
         ),
@@ -99,17 +106,47 @@ const App = () => {
               component={HomeNavigator}
               options={{
                 title: 'Home',
-                tabBarIcon: () => <FontAwesome5 name="home" size={20} />,
+                tabBarIcon: () => (
+                  <FontAwesome5
+                    name="home"
+                    size={20}
+                    testID="homeNavigationImage"
+                  />
+                ),
                 tabBarAccessibilityLabel: 'Home',
+                tabBarTestID: 'homeNavigationSection',
               }}
             />
-            <Tab.Screen name="Images" component={ImagesScreen} />
+            <Tab.Screen
+              name="Images"
+              component={ImagesScreen}
+              options={{
+                headerTitle: 'Cities',
+                headerShown: true,
+                headerTitleAlign: 'center',
+                title: 'Cities',
+                tabBarAccessibilityLabel: 'Cities',
+                tabBarIcon: () => (
+                  <MaterialCommunityIcons
+                    name="wallet-membership"
+                    size={20}
+                    testID="citiesNavigationImage"
+                  />
+                ),
+                tabBarTestID: 'citiesNavigationSection',
+              }}
+            />
             <Tab.Screen
               name="MembersTab"
               component={MemberNavigator}
               options={{
+                tabBarTestID: 'membersNavigationSection',
                 tabBarIcon: () => (
-                  <MaterialCommunityIcons name="wallet-membership" size={20} />
+                  <MaterialCommunityIcons
+                    name="wallet-membership"
+                    size={20}
+                    testID="membersNavigationImage"
+                  />
                 ),
                 tabBarAccessibilityLabel: 'Members',
               }}
