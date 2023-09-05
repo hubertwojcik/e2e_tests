@@ -52,6 +52,7 @@ const HomeNavigator = () => {
                 name="pluscircle"
                 size={25}
                 testID="addMemberIcon"
+                accessibilityLabel="addMemberLabel"
               />
             </TouchableOpacity>
           ),
@@ -83,6 +84,7 @@ const MemberNavigator = () => (
               name="pluscircle"
               size={25}
               testID="addMemberIcon"
+              accessibilityLabel="addMemberLabel"
             />
           </TouchableOpacity>
         ),
