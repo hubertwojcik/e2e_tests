@@ -1,8 +1,10 @@
-import {waitFor, expect, by, element} from 'detox';
+import {waitFor, expect, by, element, device} from 'detox';
+
+import baseData from '../testData/baseData';
 
 class Utilities {
-  async sleep(miliseconds) {
-    return new Promise(resolve => setTimeout(resolve, miliseconds));
+  async sleep(milliseconds) {
+    return new Promise(resolve => setTimeout(resolve, milliseconds));
   }
 
   async typeInElement(mobileElement, text) {
@@ -10,7 +12,7 @@ class Utilities {
     await mobileElement.tapReturnKey();
   }
 
-  async scrollToElement(targetElement, background, pixels, direction, edge) {
+  async scrollToElement(targetElement, background, pixels, direction) {
     if (direction === 'left' || direction === 'right') {
       await this.scrollHorizontallyToElement(
         element(background),
@@ -35,6 +37,7 @@ class Utilities {
       await background.swipe(scrollDirection, 'slow', 0.5);
     }
   }
+
   async selectCalendarDate(weekday, day, month, year) {
     while (
       (await this.softTextAssertion(
@@ -49,11 +52,79 @@ class Utilities {
       .tap();
   }
 
+  async selectDatePickerDate(day, month, year) {
+    if (device.getPlatform() === 'ios') {
+      await element(by.id('formDatePicker')).setDatePickerDate(
+        `${day}-${month}-${year}`,
+        'dd-MM-yyyy',
+      );
+    } else {
+      await element(by.type('android.widget.EditText'))
+        .atIndex(2)
+        .typeText(year);
+      await element(by.type('android.widget.EditText'))
+        .atIndex(2)
+        .tapReturnKey();
+      await element(by.type('android.widget.EditText'))
+        .atIndex(1)
+        .typeText(day);
+      await element(by.type('android.widget.EditText'))
+        .atIndex(1)
+        .tapReturnKey();
+      await element(by.type('android.widget.EditText'))
+        .atIndex(0)
+        .typeText(baseData.getMonth(month));
+      await element(by.type('android.widget.EditText'))
+        .atIndex(0)
+        .tapReturnKey();
+    }
+  }
+
+  async selectPickerValues(picker, value, swipeDirection) {
+    if (device.getPlatform() === 'ios') {
+      await picker.setColumnToValue(0, value);
+    } else {
+      await element(by.type('android.widget.Spinner')).tap();
+      const optionsToSelect = element(
+        by.type('android.widget.CheckedTextView'),
+      ).atIndex(by.text(value));
+      while ((await this.softElementAssertion(optionsToSelect)) === false) {
+        await element(by.type('android.widget.ListView')).swipe(
+          swipeDirection,
+          'slow',
+        );
+      }
+      await optionsToSelect.tap();
+    }
+  }
+
+  async setTime(hours, minutes) {
+    if (device.getPlatform() === 'ios') {
+      await element(by.id('formBackground')).swipe('up', 'fast', 0.5);
+      await element(by.id('formTimePicker')).setDatePickerDate(
+        `${hours}:${minutes}`,
+        'HH:mm',
+      );
+    } else {
+      await element(
+        by.label('Switch to text input mode for the time input.'),
+      ).tap();
+      await this.typeInElement(
+        element(by.type('android.widget.EditText')).atIndex(0),
+        hours,
+      );
+      await this.typeInElement(
+        element(by.type('android.widget.EditText')).atIndex(1),
+        minutes,
+      );
+    }
+  }
+
   async softElementAssertion(mobileElement) {
     try {
       await expect(mobileElement).toBeVisible();
       return true;
-    } catch (error) {
+    } catch {
       return false;
     }
   }
@@ -62,8 +133,24 @@ class Utilities {
     try {
       await expect(mobileElement).toHaveText(text);
       return true;
-    } catch (error) {
+    } catch {
       return false;
+    }
+  }
+
+  async confirmPickerButton() {
+    if (device.getPlatform() === 'ios') {
+      await element(by.id('confirmPickerButton')).tap();
+    } else {
+      await element(by.text('OK')).tap();
+    }
+  }
+
+  async cancelPickerButton() {
+    if (device.getPlatform() === 'ios') {
+      await element(by.id('cancelPickerButton')).tap();
+    } else {
+      await element(by.text('CANCEL')).tap();
     }
   }
 }
