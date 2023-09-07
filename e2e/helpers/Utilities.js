@@ -1,7 +1,6 @@
 import {waitFor, expect, by, element, device} from 'detox';
 
 import baseData from '../testData/baseData';
-
 class Utilities {
   async sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -13,29 +12,10 @@ class Utilities {
   }
 
   async scrollToElement(targetElement, background, pixels, direction) {
-    if (direction === 'left' || direction === 'right') {
-      await this.scrollHorizontallyToElement(
-        element(background),
-        direction,
-        targetElement,
-      );
-    } else {
-      await waitFor(targetElement)
-        .toBeVisible()
-        .whileElement(background)
-        .scroll(
-          pixels,
-          direction,
-          direction === 'up' || direction === 'down' ? 0.98 : NaN,
-        );
-    }
-  }
-
-  async scrollHorizontallyToElement(background, direction, targetElement) {
-    while ((await this.softElementAssertion(targetElement)) === false) {
-      const scrollDirection = direction === 'left' ? 'right' : 'left';
-      await background.swipe(scrollDirection, 'slow', 0.5);
-    }
+    await waitFor(targetElement)
+      .toBeVisible()
+      .whileElement(background)
+      .scroll(pixels, direction, direction === 'left' ? 0.25 : NaN);
   }
 
   async selectCalendarDate(weekday, day, month, year) {
@@ -80,21 +60,21 @@ class Utilities {
     }
   }
 
-  async selectPickerValues(picker, value, swipeDirection) {
+  async selectPickerValue(picker, value, swipeDirection) {
     if (device.getPlatform() === 'ios') {
       await picker.setColumnToValue(0, value);
     } else {
       await element(by.type('android.widget.Spinner')).tap();
-      const optionsToSelect = element(
-        by.type('android.widget.CheckedTextView'),
-      ).atIndex(by.text(value));
-      while ((await this.softElementAssertion(optionsToSelect)) === false) {
+      const optionToSelect = element(
+        by.type('android.widget.CheckedTextView').and(by.text(value)),
+      );
+      while ((await this.softElementAssertion(optionToSelect)) === false) {
         await element(by.type('android.widget.ListView')).swipe(
           swipeDirection,
           'slow',
         );
       }
-      await optionsToSelect.tap();
+      await optionToSelect.tap();
     }
   }
 

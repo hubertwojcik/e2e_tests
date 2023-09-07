@@ -58,43 +58,63 @@ const HomeNavigator = () => {
           ),
         }}
       />
-      <HomeStack.Screen name="Images" component={ImagesScreen} />
+      <HomeStack.Screen
+        name="Images"
+        component={ImagesScreen}
+        options={{
+          headerTitle: () => <Text testID="citiesHeader">Cities</Text>,
+          headerShown: true,
+          headerTitleAlign: 'center',
+          title: 'Cities',
+        }}
+      />
       <HomeStack.Screen name="Animation" component={AnimationScreen} />
       <HomeStack.Screen name="Extras" component={ExtrasScreen} />
     </HomeStack.Navigator>
   );
 };
 
-const MemberNavigator = () => (
-  <MemberStack.Navigator
-    screenOptions={{
-      headerBackAccessibilityLabel: 'header-back',
-    }}>
-    <MemberStack.Screen
-      name="Members"
-      component={MemberListScreen}
-      options={{
-        headerTitle: () => <Text testID="memberListHeader">Members</Text>,
-        headerRight: ({}) => (
-          //@ts-ignore
-          <TouchableOpacity onPress={() => navigation.navigate('AddMember')}>
-            <AntDesign
-              // eslint-disable-next-line react-native/no-inline-styles
-              style={{paddingRight: 15}}
-              name="pluscircle"
-              size={25}
-              testID="addMemberIcon"
-              accessibilityLabel="addMemberLabel"
-            />
-          </TouchableOpacity>
-        ),
-      }}
-    />
-    <MemberStack.Screen name="ShowMember" component={ShowMemberScreen} />
-    <MemberStack.Screen name="AddMember" component={AddMemberScreen} />
-    <MemberStack.Screen name="EditMember" component={EditMemberScreen} />
-  </MemberStack.Navigator>
-);
+const MemberNavigator = () => {
+  const navigation = useNavigation<any>();
+
+  return (
+    <MemberStack.Navigator
+      screenOptions={{
+        headerBackAccessibilityLabel: 'header-back',
+      }}>
+      <MemberStack.Screen
+        name="Members"
+        component={MemberListScreen}
+        options={{
+          headerTitle: () => <Text testID="memberListHeader">Members</Text>,
+          headerRight: ({}) => (
+            //@ts-ignore
+            <TouchableOpacity onPress={() => navigation.navigate('AddMember')}>
+              <AntDesign
+                // eslint-disable-next-line react-native/no-inline-styles
+                style={{paddingRight: 15}}
+                name="pluscircle"
+                size={25}
+                testID="addMemberIcon"
+                accessibilityLabel="addMemberLabel"
+              />
+            </TouchableOpacity>
+          ),
+        }}
+      />
+      <MemberStack.Screen name="ShowMember" component={ShowMemberScreen} />
+      <MemberStack.Screen
+        name="AddMember"
+        component={AddMemberScreen}
+        options={{
+          headerTitle: () => <Text testID="addMemberHeader">Add Member</Text>,
+          headerTitleAlign: 'center',
+        }}
+      />
+      <MemberStack.Screen name="EditMember" component={EditMemberScreen} />
+    </MemberStack.Navigator>
+  );
+};
 
 const App = () => {
   return (
@@ -123,7 +143,7 @@ const App = () => {
               name="Images"
               component={ImagesScreen}
               options={{
-                headerTitle: 'Cities',
+                headerTitle: () => <Text testID="citiesHeader">Cities</Text>,
                 headerShown: true,
                 headerTitleAlign: 'center',
                 title: 'Cities',

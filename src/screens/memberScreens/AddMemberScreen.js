@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import {Text} from 'react-native';
+
 import MemberContext from '../../context/MemberContext';
 import MemberForm from '../../components/memberComponents/MemberForm';
 
@@ -13,11 +13,6 @@ const AddMemberScreen = ({navigation}) => {
       }}
     />
   );
-};
-
-AddMemberScreen.navigationOptions = {
-  headerTitle: 'Add Member',
-  headerTitleAlign: 'center',
 };
 
 export default AddMemberScreen;

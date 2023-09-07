@@ -6,22 +6,15 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 const ImagesScreen = () => {
   return (
     <SafeAreaView style={{marginBottom: 50}}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        testID="citiesBackground">
         <ImageComponents title="Europe" listTestId="europe" />
         <ImageComponents title="USA / Canada" listTestId="usa/canada" />
         <ImageComponents title="Asia" listTestId="asia" />
       </ScrollView>
     </SafeAreaView>
   );
-};
-
-ImagesScreen.navigationOptions = {
-  headerTitle: 'Cities',
-  headerShown: true,
-  headerTitleAlign: 'center',
-  title: 'Cities',
-  tabBarIcon: <FontAwesome5 name="city" size={20} />,
-  tabBarAccessibilityLabel: 'Cities',
 };
 
 export default ImagesScreen;

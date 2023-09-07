@@ -112,6 +112,7 @@ const MemberForm = ({onSubmit, initialValues}) => {
           isFailingValidation={!emailRegex.test(email)}
           errorMessage="Please enter a valid email"
           isInError={fieldsOnError.includes('email')}
+          formTestId="email"
         />
         <MemberFormInputFields
           labelAndPlaceholder="Address Line One"
@@ -121,12 +122,14 @@ const MemberForm = ({onSubmit, initialValues}) => {
           isFailingValidation={!addressLineOne}
           errorMessage="Address line one is required"
           isInError={fieldsOnError.includes('addressLineOne')}
+          formTestId="addressLineOne"
         />
         <MemberFormInputFields
           labelAndPlaceholder="Address Line Two"
           inputValue={addressLineTwo}
           inputChangeText={addressLineTwo => setAddressLineTwo(addressLineTwo)}
           editableStatus={true}
+          formTestId="addressLineTwo"
         />
         <MemberFormInputFields
           labelAndPlaceholder="City"
@@ -136,6 +139,7 @@ const MemberForm = ({onSubmit, initialValues}) => {
           isFailingValidation={!city}
           errorMessage="City is required"
           isInError={fieldsOnError.includes('city')}
+          formTestId="city"
         />
         <MemberFormInputFields
           labelAndPlaceholder="Postcode"
@@ -145,6 +149,7 @@ const MemberForm = ({onSubmit, initialValues}) => {
           isFailingValidation={!postcode}
           errorMessage="Postcode is required"
           isInError={fieldsOnError.includes('postcode')}
+          formTestId="postcode"
         />
         <MemberFormPickerFields
           labelAndPlaceholder="Country"
@@ -176,7 +181,11 @@ const MemberForm = ({onSubmit, initialValues}) => {
           formTestId="startTime"
         />
 
-        <Button title="Save Member" onPress={handleSubmit} />
+        <Button
+          testID="saveMemberButton"
+          title="Save Member"
+          onPress={handleSubmit}
+        />
       </SafeAreaView>
     </ScrollView>
   );
