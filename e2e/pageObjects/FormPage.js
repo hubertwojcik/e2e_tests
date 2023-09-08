@@ -1,10 +1,18 @@
-import {element, by, expect} from 'detox';
+import {element, by, expect, device} from 'detox';
 import Utilities from '../helpers/Utilities';
+import baseData from '../testData/baseData';
+import assert from 'chai';
+import testData from '../testData/testData';
+import moment from 'moment';
 
 class FormPage {
   //Form headers
   get addMemberHeader() {
     return element(by.id('addMemberHeader'));
+  }
+
+  get editMemberHeader() {
+    return element(by.id('editMemberHeader'));
   }
 
   // Form fields
@@ -165,7 +173,133 @@ class FormPage {
     await expect(this.startTimeInput).toHaveText('');
     await expect(this.saveMemberButton).toBeVisible();
 
-    await element(this.formBackground).swipe('down');
+    await Utilities.scrollToElement(
+      this.nameLabel,
+      this.formBackground,
+      500,
+      'up',
+    );
+  }
+
+  async verifyEditMemberPage(formData) {
+    await expect(this.editMemberHeader).toHaveText(
+      `Edit Member ${baseData.getId(formData.member)}`,
+    );
+    await this.verifyFormLabels();
+
+    await expect(this.nameInput).toHaveText(formData.name);
+    await expect(this.surnameInput).toHaveText(formData.surname);
+    await expect(this.dateOfBirthInput).toHaveText(
+      `${formData.b_day}-${formData.b_month}-${formData.b_year}`,
+    );
+    const startDate = moment(baseData.getStartDate(formData.member));
+    await expect(this.startDayInput).toHaveText(
+      moment(startDate).format('dddd'),
+    );
+    await expect(this.emailInput).toHaveText(
+      baseData.getEmail(formData.member),
+    );
+
+    await Utilities.scrollToElement(
+      this.postcodeInput,
+      this.formBackground,
+      150,
+      'down',
+    );
+
+    await expect(this.addressLineOneInput).toHaveText(formData.address_one);
+    await expect(this.addressLineTwoInput).toHaveText(formData.address_two);
+    await expect(this.cityInput).toHaveText(formData.city);
+
+    await element(this.formBackground).swipe('up');
+
+    await expect(this.postcodeInput).toHaveText(formData.postcode);
+    await expect(this.countryInput).toHaveText(formData.country);
+    await expect(this.startDateInput).toHaveText(
+      `${moment(startDate).format('DD')}-${moment(startDate).format(
+        'MM',
+      )}-${moment(startDate).format('YYYY')}`,
+    );
+    await expect(this.startTimeInput).toHaveText(
+      `${formData.start_hour}:${formData.start_minute}`,
+    );
+    await expect(this.saveMemberButton).toBeVisible();
+
+    await Utilities.scrollToElement(
+      this.nameLabel,
+      this.formBackground,
+      500,
+      'up',
+    );
+  }
+
+  async fillInForm(formData) {
+    const name = baseData.getMemberInputName(formData.name);
+    await Utilities.typeInElement(this.nameInput, name);
+    await Utilities.typeInElement(this.surnameInput, formData.surname);
+    await this.dateOfBirthLabel.tap();
+    await this.selectDatePickerDate(
+      formData.b_day,
+      formData.b_month,
+      formData.b_year,
+    );
+    await this.confirmPicker();
+    await this.startDayLabel.tap();
+
+    const startDate = this.generateRandomDate();
+
+    await this.selectPickerValue(
+      this.startDayPicker,
+      moment(startDate).format('dddd').toString(),
+    );
+
+    const email = this.generateRandomEmail();
+
+    await Utilities.typeInElement(this.emailInput, email);
+
+    await Utilities.scrollToElement(
+      this.postcodeInput,
+      this.formBackground,
+      150,
+      'down',
+    );
+
+    await Utilities.typeInElement(
+      this.addressLineOneInput,
+      formData.address_one,
+    );
+    await Utilities.typeInElement(
+      this.addressLineTwoInput,
+      formData.address_two,
+    );
+    await Utilities.typeInElement(this.cityInput, formData.city);
+    await Utilities.typeInElement(this.postcodeInput, formData.postcode);
+    await this.countryLabel.tap();
+
+    await element(this.formBackground).swipe('up', 'fast', 0.25);
+
+    await this.selectPickerValue(this.countryPicker, formData.country, 'up');
+    await this.startDateLabel.tap();
+
+    await element(this.formBackground).swipe('up', 'fast', 0.25);
+
+    await this.selectCalendarDate(
+      moment(startDate).format('dddd'),
+      moment(startDate).format('D'),
+      moment(startDate).format('MMMM'),
+      moment(startDate).format('YYYY'),
+    );
+    await this.startTimeLabel.tap();
+    await this.setTime(formData.start_hour, formData.start_minute);
+    await this.confirmPicker;
+
+    this.saveMemberData(
+      formData.member,
+      name,
+      formData.surname,
+      email,
+      startDate,
+    );
   }
 
   // Support functions
@@ -194,7 +328,147 @@ class FormPage {
     await expect(this.startDateLabel).toHaveText('Start Date:');
     await expect(this.startTimeLabel).toHaveText('Start Time:');
 
-    await element(this.formBackground).swipe('down');
+    await Utilities.scrollToElement(
+      this.nameLabel,
+      this.formBackground,
+      500,
+      'up',
+    );
+  }
+
+  async selectCalendarDate(weekday, day, month, year) {
+    while (
+      (await Utilities.softTextAssertion(
+        element(by.id('undefined.header.title')),
+        `${month} ${year}`,
+      )) === false
+    ) {
+      await element(by.id('undefined.header.rightArrow')).tap();
+    }
+    await element(by.label(` ${weekday} ${day} ${month} ${year} `))
+      .atIndex(0)
+      .tap();
+  }
+
+  async selectDatePickerDate(day, month, year) {
+    if (device.getPlatform() === 'ios') {
+      await this.dateOfBirthPicker.setDatePickerDate(
+        `${day}-${month}-${year}`,
+        'dd-MM-yyyy',
+      );
+    } else {
+      await element(by.type('android.widget.EditText'))
+        .atIndex(2)
+        .typeText(year);
+      await element(by.type('android.widget.EditText'))
+        .atIndex(2)
+        .tapReturnKey();
+      await element(by.type('android.widget.EditText'))
+        .atIndex(1)
+        .typeText(day);
+      await element(by.type('android.widget.EditText'))
+        .atIndex(1)
+        .tapReturnKey();
+      await element(by.type('android.widget.EditText'))
+        .atIndex(0)
+        .typeText(baseData.getMonth(month));
+      await element(by.type('android.widget.EditText'))
+        .atIndex(0)
+        .tapReturnKey();
+    }
+  }
+
+  async selectPickerValue(picker, value, swipeDirection) {
+    if (device.getPlatform() === 'ios') {
+      await picker.setColumnToValue(0, value);
+    } else {
+      await element(by.type('android.widget.Spinner')).tap();
+      const optionToSelect = element(
+        by.type('android.widget.CheckedTextView').and(by.text(value)),
+      );
+      while ((await Utilities.softElementAssertion(optionToSelect)) === false) {
+        await element(by.type('android.widget.ListView')).swipe(
+          swipeDirection,
+          'slow',
+        );
+      }
+      await optionToSelect.tap();
+    }
+  }
+
+  async setTime(hours, minutes) {
+    if (device.getPlatform() === 'ios') {
+      await element(this.formBackground).swipe('up', 'fast', 0.5);
+      await this.startTimePicker.setDatePickerDate(
+        `${hours}:${minutes}`,
+        'HH:mm',
+      );
+    } else {
+      await element(
+        by.label('Switch to text input mode for the time input.'),
+      ).tap();
+      await Utilities.typeInElement(
+        element(by.type('android.widget.EditText')).atIndex(0),
+        hours,
+      );
+      await Utilities.typeInElement(
+        element(by.type('android.widget.EditText')).atIndex(1),
+        minutes,
+      );
+    }
+  }
+
+  async confirmPicker() {
+    if (device.getPlatform() === 'ios') {
+      await this.confirmPickerButton.tap();
+    } else {
+      await element(by.text('OK')).tap();
+    }
+  }
+
+  async cancelPicker() {
+    if (device.getPlatform() === 'ios') {
+      await this.cancelPickerButton.tap();
+    } else {
+      await element(by.text('CANCEL')).tap();
+    }
+  }
+
+  async saveMemberData(memberNumber, name, surname, email, startDate) {
+    switch (memberNumber) {
+      case '1':
+        testData.setName_1(name);
+        testData.setSurname_1(surname);
+        testData.setEmail_1(email);
+        testData.setStartDate_1(startDate);
+        break;
+      case '2':
+        testData.setName_2(name);
+        testData.setSurname_2(surname);
+        testData.setEmail_2(email);
+        testData.setStartDate_2(startDate);
+        break;
+
+      default:
+        assert.fail(
+          `The entered member number: ${memberNumber} is ot valid Member`,
+        );
+    }
+  }
+
+  generateRandomEmail() {
+    const values = '123456789';
+    let email = 'test_';
+    for (let i = 0; i <= 5; i++) {
+      email += values.charAt(Math.round(values.length * Math.random()));
+    }
+    email += '@pinnacleqa.com';
+    return email;
+  }
+
+  generateRandomDate() {
+    const randomDay = Math.floor(Math.random() * 90);
+    return moment().add(randomDay, 'days');
   }
 }
 

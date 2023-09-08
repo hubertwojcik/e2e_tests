@@ -2,8 +2,8 @@ import React, {useContext} from 'react';
 import MemberContext from '../../context/MemberContext';
 import MemberForm from '../../components/memberComponents/MemberForm';
 
-const EditMemberScreen = ({navigation}) => {
-  const id = navigation.getParam('id');
+const EditMemberScreen = ({navigation, route}) => {
+  const id = route.params.id;
   const {data, editMember} = useContext(MemberContext);
 
   const member = data.find(member => member.id === id);
@@ -29,15 +29,6 @@ const EditMemberScreen = ({navigation}) => {
       }}
     />
   );
-};
-
-EditMemberScreen.navigationOptions = ({navigation}) => {
-  const id = navigation.getParam('id');
-
-  return {
-    headerTitle: `Edit Member ${id}`,
-    headerTitleAlign: 'center',
-  };
 };
 
 export default EditMemberScreen;

@@ -22,7 +22,7 @@ Feature: Cities images are correctly displayed and scrollable
             | USA/Canada | right     | 3      | left        | 1        |
             | Asia       | right     | 4      | left        | 1        |
 
-    @cities @scrolling @test
+    @cities @scrolling 
     Scenario: I can scroll vertically to edges
     When I scroll 'europe' to the 'right'
     Then I scroll 'europe' to the 'left'

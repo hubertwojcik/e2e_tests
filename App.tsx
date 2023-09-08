@@ -2,7 +2,11 @@ import 'react-native-reanimated';
 import 'react-native-gesture-handler';
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import {NavigationContainer, useNavigation} from '@react-navigation/native';
+import {
+  NavigationContainer,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 // import SplashScreen from 'react-native-splash-screen';
@@ -21,6 +25,7 @@ import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import {Text, TouchableOpacity} from 'react-native';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const HomeStack = createStackNavigator();
 const MemberStack = createStackNavigator();
@@ -76,6 +81,8 @@ const HomeNavigator = () => {
 
 const MemberNavigator = () => {
   const navigation = useNavigation<any>();
+  const route = useRoute();
+  console.log('🚀 ~ file: App.tsx:81 ~ MemberNavigator ~ route:', route);
 
   return (
     <MemberStack.Navigator
@@ -102,7 +109,30 @@ const MemberNavigator = () => {
           ),
         }}
       />
-      <MemberStack.Screen name="ShowMember" component={ShowMemberScreen} />
+      <MemberStack.Screen
+        name="ShowMember"
+        component={ShowMemberScreen}
+        options={{
+          headerTitle: () => (
+            <Text testID="showMemberHeader">
+              {/* @ts-ignore */}
+              {`Member ${route?.params?.params.id}`}
+            </Text>
+          ),
+          headerTitleAlign: 'center',
+          headerRight: () => (
+            <TouchableOpacity
+              onPress={() =>
+                navigation.navigate('EditMember', {
+                  //@ts-ignore
+                  id: route?.params?.params.id,
+                })
+              }>
+              <FontAwesome name="pencil" size={25} testID="editMemberIcon" />
+            </TouchableOpacity>
+          ),
+        }}
+      />
       <MemberStack.Screen
         name="AddMember"
         component={AddMemberScreen}
@@ -111,7 +141,19 @@ const MemberNavigator = () => {
           headerTitleAlign: 'center',
         }}
       />
-      <MemberStack.Screen name="EditMember" component={EditMemberScreen} />
+      <MemberStack.Screen
+        name="EditMember"
+        component={EditMemberScreen}
+        options={{
+          headerTitle: () => (
+            <Text testID="editMemberHeader">
+              {/* @ts-ignore */}
+              {`Edit Member ${route?.params?.params.id}`}
+            </Text>
+          ),
+          headerTitleAlign: 'center',
+        }}
+      />
     </MemberStack.Navigator>
   );
 };
