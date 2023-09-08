@@ -58,30 +58,63 @@ module.exports = {
       },
     },
   },
+  // artifacts: {
+  // rootDir: 'e2e/reports/artifacts',
+  // plugins: {
+  // screenshot: {
+  //   enabled: true,
+  //   shouldTakeAutomaticSnapshots: true,
+  //   keepOnlyFailedTestsArtifacts: true,
+  //   takeWhen: {
+  //     testStart: true,
+  //     testDone: true,
+  //     appNotReady: true,
+  //   },
+  // },
+  // },
+  // },
   configurations: {
     'ios.sim.debug': {
       device: 'simulator',
       app: 'ios.debug',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/ios',
+      },
     },
     'ios.sim.release': {
       device: 'simulator',
       app: 'ios.release',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/ios',
+      },
     },
     'android.att.debug': {
       device: 'attached',
       app: 'android.debug',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/android',
+      },
     },
     'android.att.release': {
       device: 'attached',
       app: 'android.release',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/android',
+      },
     },
     'android.emu.debug': {
       device: 'emulator',
       app: 'android.debug',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/android',
+      },
     },
     'android.emu.release': {
       device: 'emulator',
       app: 'android.release',
+      artifacts: {
+        rootDir: './e2e/reports/artifacts/android',
+      },
     },
   },
 };
