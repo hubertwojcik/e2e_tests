@@ -1,5 +1,9 @@
-import {waitFor, expect, by, element, device} from 'detox';
+import {waitFor, expect, device} from 'detox';
+import {copyFile as _copyFile, createReadStream} from 'fs-extra';
+import tempfile from 'tempfile';
+import {promisify} from 'util';
 
+const copyFile = promisify(_copyFile);
 class Utilities {
   async sleep(milliseconds) {
     return new Promise(resolve => setTimeout(resolve, milliseconds));
@@ -40,6 +44,13 @@ class Utilities {
   async getElementText(mobileElement) {
     const attributes = await mobileElement.getAttributes();
     return attributes.text;
+  }
+
+  async takeScreenshotStream(screenshotName) {
+    const imagePath = await device.takeScreenshot(screenshotName);
+    const persistedImagePath = tempfile('.png');
+    await copyFile(imagePath, persistedImagePath);
+    return createReadStream(persistedImagePath);
   }
 }
 

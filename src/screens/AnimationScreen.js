@@ -7,8 +7,10 @@ import {
   Easing,
   Switch,
 } from 'react-native';
+import Config from 'react-native-config';
 
 const AnimationScreen = () => {
+  console.log('🚀 ~ file: AnimationScreen.j s:11 ~ Config:', Config);
   const [rotateValue] = useState(new Animated.Value(0));
   const [isAnimationStarted, setIsAnimationStarted] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
@@ -26,15 +28,17 @@ const AnimationScreen = () => {
   };
 
   const StartImageRotate = () => {
-    setIsAnimationStarted(true);
-    Animated.loop(
-      Animated.timing(rotateValue, {
-        toValue: 1,
-        duration: 3000,
-        easing: Easing.linear,
-        useNativeDriver: false,
-      }),
-    ).start();
+    if (Config.ENV !== 'detox') {
+      setIsAnimationStarted(true);
+      Animated.loop(
+        Animated.timing(rotateValue, {
+          toValue: 1,
+          duration: 3000,
+          easing: Easing.linear,
+          useNativeDriver: false,
+        }),
+      ).start();
+    }
   };
 
   const StopImageRotate = () => {
@@ -67,6 +71,7 @@ const AnimationScreen = () => {
 
       <View style={styles.container}>
         <Switch
+          testID="animationSwitch"
           style={styles.switch}
           onValueChange={toggleSwitch}
           value={isEnabled}

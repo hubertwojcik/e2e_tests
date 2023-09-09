@@ -24,8 +24,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {GestureHandlerRootView} from 'react-native-gesture-handler';
 import AntDesign from 'react-native-vector-icons/AntDesign';
-import {Text, TouchableOpacity} from 'react-native';
+import {LogBox, Text, TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Config from 'react-native-config';
 
 const HomeStack = createStackNavigator();
 const MemberStack = createStackNavigator();
@@ -159,6 +160,10 @@ const MemberNavigator = () => {
 };
 
 const App = () => {
+  if (Config.ENV === 'detox') {
+    LogBox.ignoreAllLogs();
+  }
+
   return (
     // eslint-disable-next-line react-native/no-inline-styles
     <GestureHandlerRootView style={{flex: 1}}>

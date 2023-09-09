@@ -2,7 +2,7 @@ Feature: All member screens are correctly displayed
 
     As a user with no member, I can navigate through the different members screens
 
-    @members @memberList @navigation
+    @members @memberlist @navigation
     Scenario: Verify that the Member List screen is correctly displayed
         Given I tap on the 'Members' Home section
         When the Member List page is correctly displayed for 0 members
