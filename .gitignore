@@ -1,3 +1,6 @@
+#e2e
+e2e/reports
+e2e/.tmp
 # OSX
 #
 .DS_Store
